@@ -1,4 +1,4 @@
 import re
-pattern = r'^a*b$'
+pattern = r'^ab*$'
 string = input("Enter a string: ")
 print(bool(re.match(pattern, string)))
