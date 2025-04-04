@@ -15,7 +15,7 @@ def main():
     screen = pygame.display.set_mode((800, 600))
     clock = pygame.time.Clock()
     
-    radius = 10
+    radius = 6
     mode = black
     last_pos = None
     
