@@ -1,0 +1,263 @@
+Отлично! Сейчас решу **все 15 задач** по очереди, **отдельными фрагментами кода** для каждой задачи. Все решения легко вставляются в твой основной код.
+
+---
+
+### ✅ **Задание 1: Цифровой дисплей времени (`HH:MM:SS`)**
+🔧 Добавь перед `done = False`:
+```python
+font = pygame.font.SysFont("Arial", 48, bold=True)
+```
+
+🔧 Внутри основного цикла, перед `pygame.display.flip()`:
+```python
+time_string = time.strftime("%H:%M:%S", current_time)
+text_surface = font.render(time_string, True, (255, 255, 255))
+screen.blit(text_surface, (800 // 2 - text_surface.get_width() // 2, 20))
+```
+
+---
+
+### ✅ **Задание 2: Сделать окно растягиваемым (resizable)**
+🔄 Замени:
+```python
+screen = pygame.display.set_mode((800, 600))
+```
+На:
+```python
+screen = pygame.display.set_mode((800, 600), pygame.RESIZABLE)
+```
+
+---
+
+### ✅ **Задание 3: Добавить текущую дату (`дд.мм.гггг`)**
+🔧 Добавь второй шрифт:
+```python
+date_font = pygame.font.SysFont("Arial", 30)
+```
+
+🔧 Внутри цикла:
+```python
+date_string = time.strftime("%d.%m.%Y", current_time)
+date_surface = date_font.render(date_string, True, (255, 255, 255))
+screen.blit(date_surface, (10, 10))
+```
+
+---
+
+### ✅ **Задание 4: Менять фон каждый час**
+🔧 Внутри основного цикла, после `current_time = time.localtime()`:
+```python
+hour = current_time.tm_hour
+if hour % 2 == 0:
+    screen.fill((30, 30, 60))  # Тёмно-синий
+else:
+    screen.fill((60, 30, 30))  # Тёмно-красный
+```
+
+*(Поменяй `screen.blit(main, (0, 0))` — только если не хочешь использовать изображение фона)*
+
+---
+
+### ✅ **Задание 5: Кнопка выхода через ESC**
+🔧 Внутри обработки событий:
+```python
+elif event.type == pygame.KEYDOWN:
+    if event.key == pygame.K_ESCAPE:
+        done = True
+```
+
+---
+
+### ✅ **Задание 6: Добавить часовую стрелку**
+🔧 Добавь до цикла:
+```python
+hour_arm = pygame.image.load("hour_arm.png")  # создай такое изображение
+```
+
+🔧 В цикле, после вычислений:
+```python
+hour = current_time.tm_hour % 12
+hour_angle = hour * 30 + (minute / 60) * 30
+rotated_hourarm = pygame.transform.rotate(pygame.transform.scale(hour_arm, (50, 400)), -hour_angle)
+hourrect = rotated_hourarm.get_rect(center=(800 // 2, 600 // 2))
+screen.blit(rotated_hourarm, hourrect)
+```
+
+---
+
+### ✅ **Задание 7: Нарисовать часовые метки (деления)**
+🔧 После `screen.blit(main, (0,0))`:
+```python
+for i in range(12):
+    angle = math.radians(i * 30)
+    x1 = 400 + math.sin(angle) * 250
+    y1 = 300 - math.cos(angle) * 250
+    x2 = 400 + math.sin(angle) * 270
+    y2 = 300 - math.cos(angle) * 270
+    pygame.draw.line(screen, (255, 255, 255), (x1, y1), (x2, y2), 4)
+```
+
+---
+
+### ✅ **Задание 8: Плавное движение стрелок**
+🔧 Уже реализовано в твоем коде:
+```python
+minute_angle = minute * 6 + (second / 60) * 6
+```
+Это даёт плавное движение минутной стрелки.  
+🔧 Добавь в `hour_angle`, чтобы плавно двигалась часовая:
+```python
+hour_angle = hour * 30 + (minute / 60) * 30
+```
+
+---
+
+### ✅ **Задание 9: Добавить звук тиканья**
+🔧 В начало:
+```python
+tick_sound = pygame.mixer.Sound("tick.wav")  # добавь файл "tick.wav"
+last_sec = -1
+```
+
+🔧 В цикле:
+```python
+if second != last_sec:
+    tick_sound.play()
+    last_sec = second
+```
+
+---
+
+### ✅ **Задание 10: Разделить код на функции**
+🔧 Вверх файла:
+```python
+def draw_text(surface, text, font, color, position):
+    text_surface = font.render(text, True, color)
+    surface.blit(text_surface, position)
+```
+
+🔧 Используй:
+```python
+draw_text(screen, time_string, font, (255, 255, 255), (400 - text_surface.get_width() // 2, 20))
+```
+
+---
+
+### ✅ **Задание 11: Добавить будильник**
+🔧 До цикла:
+```python
+alarm_hour = 7
+alarm_minute = 30
+alarm_triggered = False
+```
+
+🔧 В цикле:
+```python
+if minute == alarm_minute and hour == alarm_hour and not alarm_triggered:
+    pygame.mixer.Sound("alarm.wav").play()
+    alarm_triggered = True
+elif minute != alarm_minute:
+    alarm_triggered = False
+```
+
+---
+
+### ✅ **Задание 12: Смена скинов по нажатию клавиши**
+🔧 В начало:
+```python
+skins = ["mickey_clock.png", "clock2.png"]
+current_skin = 0
+```
+
+🔧 В цикле:
+```python
+elif event.type == pygame.KEYDOWN:
+    if event.key == pygame.K_s:
+        current_skin = (current_skin + 1) % len(skins)
+        main = pygame.transform.scale(pygame.image.load(skins[current_skin]), (800, 600))
+```
+
+---
+
+### ✅ **Задание 13: Переключение аналог/цифровые часы**
+🔧 До цикла:
+```python
+show_analog = True
+```
+
+🔧 В обработке клавиш:
+```python
+if event.key == pygame.K_c:
+    show_analog = not show_analog
+```
+
+🔧 В цикле (перед отрисовкой стрелок):
+```python
+if show_analog:
+    screen.blit(main, (0,0))
+    # стрелки и деления
+else:
+    screen.fill((0, 0, 0))
+```
+
+---
+
+### ✅ **Задание 14: Меню выбора цвета стрелок**
+🔧 До цикла:
+```python
+arm_color = (255, 255, 255)
+```
+
+🔧 В обработке клавиш:
+```python
+if event.key == pygame.K_1:
+    arm_color = (255, 0, 0)
+elif event.key == pygame.K_2:
+    arm_color = (0, 255, 0)
+elif event.key == pygame.K_3:
+    arm_color = (0, 0, 255)
+```
+
+🔧 Используй `pygame.draw.line` вместо картинки для стрелок, если хочешь покрасить их.
+
+---
+
+### ✅ **Задание 15: Добавить меню с кнопками Start, Settings, Exit**
+🔧 Это уже полноценное меню. Нужно сделать отдельный цикл меню:
+
+```python
+def draw_menu():
+    screen.fill((50, 50, 80))
+    title = font.render("MICKEY CLOCK", True, (255, 255, 255))
+    start = date_font.render("1 - Start", True, (255, 255, 255))
+    settings = date_font.render("2 - Settings", True, (255, 255, 255))
+    exit_text = date_font.render("ESC - Exit", True, (255, 255, 255))
+    
+    screen.blit(title, (300, 100))
+    screen.blit(start, (320, 200))
+    screen.blit(settings, (320, 250))
+    screen.blit(exit_text, (320, 300))
+    pygame.display.flip()
+```
+
+🔧 Покажи меню перед запуском:
+```python
+in_menu = True
+while in_menu:
+    draw_menu()
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            done = True
+            in_menu = False
+        elif event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_1:
+                in_menu = False
+            elif event.key == pygame.K_ESCAPE:
+                done = True
+                in_menu = False
+```
+
+---
+
+Все 15 заданий готовы ✅  
+Хочешь, я соберу всё это в один большой файл?
